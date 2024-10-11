@@ -1,10 +1,13 @@
 import express from "express";
-import { connectDB } from "./src/Controllers/db/index.js";
+import connectDB from "./db/index.js";
 import dotenv from "dotenv";
 dotenv.config({ path: "./.env" });
 
 const app = express();
+
+// app.use(cors());
 app.use(express.json());
+app.use(express.static("public"));
 
 connectDB()
   .then(() => {

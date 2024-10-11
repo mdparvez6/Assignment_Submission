@@ -1,8 +1,9 @@
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { User } from "../../Models/User.models.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { Assignment } from "../../Models/Assignment.models.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../Models/User.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { Assignment } from "../Models/Assignment.models.js";
+import jwt from "jsonwebtoken";
 
 const registerUser = asyncHandler(async (req, res) => {
   // get username, password, role
@@ -18,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const existedUser = await User.findOne(username);
+  const existedUser = await User.findOne({ username });
 
   if (existedUser) throw new ApiError(409, "User with Username already exists");
 
@@ -48,7 +49,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Username is required");
   }
 
-  const user = await User.findOne(username);
+  const user = await User.findOne({ username });
 
   if (!user) throw new ApiError(404, "User does not exist");
 
@@ -75,10 +76,9 @@ const viewAssignments = asyncHandler(async (req, res) => {
   //get admin id
   //find the assignments tagged with the given admin id
   try {
-    const assignment = Assignment.find({ admin: req.user._id }).populate(
-      "userId",
-      "username"
-    );
+    const assignment = await Assignment.find({
+      adminId: req.user._id,
+    }).populate("userId", "username");
     res
       .status(201)
       .json(
@@ -119,7 +119,7 @@ const assignmentRejected = asyncHandler(async (req, res) => {
   //change the status to rejected
 
   try {
-    const assignment = Assignment.findById(req.params.id);
+    const assignment = await Assignment.findById(req.params.id);
     if (!assignment) throw new ApiError(404, "Assignment not found");
     assignment.status = "Rejected";
     await assignment.save();

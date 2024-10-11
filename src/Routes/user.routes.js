@@ -4,7 +4,7 @@ import {
   loginUser,
   uploadAssignment,
   getAllAdmins,
-} from "../src/Controllers/user.controllers.js";
+} from "../Controllers/user.controllers.js";
 import { verifyJWT } from "../Middleware/auth.middleware.js";
 
 const router = express.Router();

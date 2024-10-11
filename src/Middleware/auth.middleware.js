@@ -1,12 +1,14 @@
-import { User } from "../Models/User.models";
-import { ApiError } from "../src/Controllers/utils/ApiError";
-import { asyncHandler } from "../src/Controllers/utils/asyncHandler";
+import { User } from "../Models/User.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = (role) =>
   asyncHandler(async (req, _, next) => {
     try {
-      const token = req.header("Authorization");
+      const token = req.header("Authorization")?.replace("Bearer ", "");
+
+      console.log(token);
 
       if (!token) {
         throw new ApiError(401, "Unauthorized request");
@@ -14,6 +16,7 @@ export const verifyJWT = (role) =>
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select("-password");
+      console.log(user);
       if (!user) {
         throw new ApiError(401, "Invalid Access Token");
       }
@@ -23,6 +26,6 @@ export const verifyJWT = (role) =>
       req.user = user;
       next();
     } catch (error) {
-      throw new ApiError(401, error?.message || "Invalid access token");
+      throw new ApiError(401, error?.message);
     }
   });

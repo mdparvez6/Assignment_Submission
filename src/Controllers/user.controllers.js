@@ -1,8 +1,9 @@
-import { asyncHandler } from "../../utils/asyncHandler.js";
-import { User } from "../../Models/User.models.js";
-import { ApiError } from "../../utils/ApiError.js";
-import { ApiResponse } from "../../utils/ApiResponse.js";
-import { Assignment } from "../../Models/Assignment.models.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { User } from "../Models/User.models.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { Assignment } from "../Models/Assignment.models.js";
+import jwt from "jsonwebtoken";
 
 const registerUser = asyncHandler(async (req, res) => {
   // get username, password, role
@@ -18,7 +19,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "All fields are required");
   }
 
-  const existedUser = await User.findOne(username);
+  const existedUser = await User.findOne({ username });
 
   if (existedUser) throw new ApiError(409, "User with Username already exists");
 
@@ -48,7 +49,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Username is required");
   }
 
-  const user = await User.findOne(username);
+  const user = await User.findOne({ username });
 
   if (!user) throw new ApiError(404, "User does not exist");
 
@@ -79,9 +80,10 @@ const uploadAssignment = asyncHandler(async (req, res) => {
   // create assignment object and save
   const { task, adminId } = req.body;
   try {
-    const admin = User.findById(adminId);
+    const admin = await User.findById(adminId);
     if (!admin) throw new ApiError(404, "Admin does not exist");
-    if (!admin.role !== "admin") throw new ApiError(404, "Incorrect Admin Id");
+    console.log(admin);
+    if (admin.role !== "admin") throw new ApiError(404, "Incorrect Admin Id");
     const assignment = new Assignment({
       userId: req.user._id,
       task,
@@ -100,7 +102,7 @@ const uploadAssignment = asyncHandler(async (req, res) => {
 
 const getAllAdmins = asyncHandler(async (req, res) => {
   try {
-    const admins = User.find({ role: "admin" }).select("-password");
+    const admins = await User.find({ role: "admin" }).select("-password");
     res.status(201).json(new ApiResponse(201, admins, "All Admins"));
   } catch (error) {
     throw new ApiError(500, error?.message);

@@ -5,7 +5,7 @@ import {
   assignmentAccepted,
   assignmentRejected,
   viewAssignments,
-} from "../src/Controllers/admin.controllers.js";
+} from "../Controllers/admin.controllers.js";
 import { verifyJWT } from "../Middleware/auth.middleware.js";
 
 const router = express.Router();
@@ -16,8 +16,8 @@ router.post("/login", loginUser);
 
 router.get("/assignments", verifyJWT("admin"), viewAssignments);
 
-router.get("/assignments/:id/accept", verifyJWT("admin"), assignmentAccepted);
+router.post("/assignments/:id/accept", verifyJWT("admin"), assignmentAccepted);
 
-router.get("/assignment/:id/reject", verifyJWT("admin"), assignmentRejected);
+router.post("/assignments/:id/reject", verifyJWT("admin"), assignmentRejected);
 
 export default router;
