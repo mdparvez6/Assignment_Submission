@@ -123,10 +123,12 @@ const assignmentRejected = asyncHandler(async (req, res) => {
     if (!assignment) throw new ApiError(404, "Assignment not found");
     assignment.status = "Rejected";
     await assignment.save();
-    return res.status(
-      201,
-      new ApiResponse(201, assignment, "Assignment rejected Successfully")
-    );
+    return res
+      .status(201)
+      .json(
+        201,
+        new ApiResponse(201, assignment, "Assignment rejected Successfully")
+      );
   } catch (error) {
     throw new ApiError(500, error?.message);
   }
