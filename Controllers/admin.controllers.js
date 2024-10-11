@@ -71,6 +71,28 @@ const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+const viewAssignments = asyncHandler(async (req, res) => {
+  //get admin id
+  //find the assignments tagged with the given admin id
+  try {
+    const assignment = Assignment.find({ admin: req.user._id }).populate(
+      "userId",
+      "username"
+    );
+    res
+      .status(201)
+      .json(
+        new ApiResponse(
+          201,
+          assignment,
+          "successfully fetched all the assingments assigned to the admin"
+        )
+      );
+  } catch (error) {
+    throw new ApiError(500, error.message);
+  }
+});
+
 const assignmentAccepted = asyncHandler(async (req, res) => {
   //take id from the URL
   //check if the user sent an assignment with that id
@@ -109,4 +131,11 @@ const assignmentRejected = asyncHandler(async (req, res) => {
     throw new ApiError(500, `${error}`);
   }
 });
-export { registerUser, loginUser, assignmentAccepted, assignmentRejected };
+
+export {
+  registerUser,
+  loginUser,
+  assignmentAccepted,
+  assignmentRejected,
+  viewAssignments,
+};
