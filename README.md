@@ -29,7 +29,7 @@ This is a backend system for an assignment submission portal where users can upl
 ### 1. Clone the Repository
 
 ```bash
-git clone [https://github.com/your-username/assignment-portal.git](https://github.com/mdparvez6/Assignment_Submission)
+git clone https://github.com/mdparvez6/Assignment_Submission
 cd assignment-portal
 ```
 
