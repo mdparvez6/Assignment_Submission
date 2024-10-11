@@ -5,7 +5,7 @@ import {
   assignmentAccepted,
   assignmentRejected,
   viewAssignments,
-} from "../Controllers/admin.controllers.js";
+} from "../src/Controllers/admin.controllers.js";
 import { verifyJWT } from "../Middleware/auth.middleware.js";
 
 const router = express.Router();

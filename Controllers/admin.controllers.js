@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { User } from "../Models/User.models.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { Assignment } from "../Models/Assignment.models.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { User } from "../../Models/User.models.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
+import { Assignment } from "../../Models/Assignment.models.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   // get username, password, role
@@ -65,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user: loggedInUser },
+        { user: loggedInUser, token },
         "Admin logged In Successfully"
       )
     );
@@ -89,7 +89,7 @@ const viewAssignments = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(500, error.message);
+    throw new ApiError(500, error?.message);
   }
 });
 
@@ -109,7 +109,7 @@ const assignmentAccepted = asyncHandler(async (req, res) => {
       .status(201)
       .json(new ApiResponse(201, assignment, "Accepted Successfully"));
   } catch (error) {
-    throw new ApiError(500, `${error}`);
+    throw new ApiError(500, error?.message);
   }
 });
 
@@ -128,7 +128,7 @@ const assignmentRejected = asyncHandler(async (req, res) => {
       new ApiResponse(201, assignment, "Assignment rejected Successfully")
     );
   } catch (error) {
-    throw new ApiError(500, `${error}`);
+    throw new ApiError(500, error?.message);
   }
 });
 

@@ -1,6 +1,6 @@
 import { User } from "../Models/User.models";
-import { ApiError } from "../utils/ApiError";
-import { asyncHandler } from "../utils/asyncHandler";
+import { ApiError } from "../src/Controllers/utils/ApiError";
+import { asyncHandler } from "../src/Controllers/utils/asyncHandler";
 import jwt from "jsonwebtoken";
 
 export const verifyJWT = (role) =>
@@ -15,7 +15,7 @@ export const verifyJWT = (role) =>
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select("-password");
       if (!user) {
-        throw new ApiError(401, "Invalid Acess Token");
+        throw new ApiError(401, "Invalid Access Token");
       }
       if (user.role !== role) {
         throw new ApiError(403, "Unauthorized role");

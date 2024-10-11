@@ -4,16 +4,16 @@ import {
   loginUser,
   uploadAssignment,
   getAllAdmins,
-} from "../Controllers/user.controllers.js";
+} from "../src/Controllers/user.controllers.js";
 import { verifyJWT } from "../Middleware/auth.middleware.js";
 
 const router = express.Router();
 
-router.user("/register", registerUser);
+router.post("/register", registerUser);
 
 router.post("/login", loginUser);
 
-router.post("upload", verifyJWT("user"), uploadAssignment);
+router.post("/upload", verifyJWT("user"), uploadAssignment);
 
 router.get("/admins", getAllAdmins);
 

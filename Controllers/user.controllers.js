@@ -1,8 +1,8 @@
-import { asyncHandler } from "../utils/asyncHandler.js";
-import { User } from "../Models/User.models.js";
-import { ApiError } from "../utils/ApiError.js";
-import { ApiResponse } from "../utils/ApiResponse.js";
-import { Assignment } from "../Models/Assignment.models.js";
+import { asyncHandler } from "../../utils/asyncHandler.js";
+import { User } from "../../Models/User.models.js";
+import { ApiError } from "../../utils/ApiError.js";
+import { ApiResponse } from "../../utils/ApiResponse.js";
+import { Assignment } from "../../Models/Assignment.models.js";
 
 const registerUser = asyncHandler(async (req, res) => {
   // get username, password, role
@@ -65,7 +65,7 @@ const loginUser = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user: loggedInUser },
+        { user: loggedInUser, token },
         "User logged In Successfully"
       )
     );
@@ -81,7 +81,7 @@ const uploadAssignment = asyncHandler(async (req, res) => {
   try {
     const admin = User.findById(adminId);
     if (!admin) throw new ApiError(404, "Admin does not exist");
-    if (!admin.role != "admin") throw new ApiError(404, "Incorrect Admin Id");
+    if (!admin.role !== "admin") throw new ApiError(404, "Incorrect Admin Id");
     const assignment = new Assignment({
       userId: req.user._id,
       task,
@@ -94,7 +94,7 @@ const uploadAssignment = asyncHandler(async (req, res) => {
         new ApiResponse(201, assignment, "Successfully Uploaded Assignment")
       );
   } catch (error) {
-    throw new ApiError(500, error.message);
+    throw new ApiError(500, error?.message);
   }
 });
 
@@ -103,7 +103,7 @@ const getAllAdmins = asyncHandler(async (req, res) => {
     const admins = User.find({ role: "admin" }).select("-password");
     res.status(201).json(new ApiResponse(201, admins, "All Admins"));
   } catch (error) {
-    throw new ApiError(500, `${error}`);
+    throw new ApiError(500, error?.message);
   }
 });
 export { registerUser, loginUser, uploadAssignment, getAllAdmins };
